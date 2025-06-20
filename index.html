@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Horta Sustentável</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Horta Sustentável</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="collapse navbar-collapse justify-content-end"
+        id="navbarContent"
+      >
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Sobre</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container my-4">
+    <h1 class="mb-4 text-center text-success">Dashboard da Horta Sustentável</h1>
+
+    <!-- Cards sensores -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card border-success shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Temperatura</h5>
+            <p class="display-5 text-danger" id="temp-value">-- °C</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card border-success shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Umidade</h5>
+            <p class="display-5 text-primary" id="humidity-value">-- %</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card border-success shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Luminosidade</h5>
+            <p class="display-5 text-warning" id="light-value">-- lx</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card border-success shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Nível da Água</h5>
+            <p class="display-5 text-info" id="water-value">-- %</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-success text-white">Dados do Sensor - Últimas 24h</div>
+      <div class="card-body">
+        <canvas id="sensorChart" height="100"></canvas>
+      </div>
+    </div>
+
+    <!-- Logs -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-success text-white">Logs do Sistema</div>
+      <div class="card-body" style="height: 150px; overflow-y: auto; font-family: monospace; background: #f8f9fa;">
+        <pre id="logs">
+[10:00:01] Temperatura: 24.5°C
+[10:00:01] Umidade: 60%
+[10:00:01] Luminosidade: 300 lx
+[10:00:01] Nível da Água: 80%
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-success text-white text-center py-3 mt-auto">
+    &copy; 2025 Horta Sustentável - Alexandro Costa
+  </footer>
+
+  <!-- Bootstrap Bundle JS (Popper + Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Script para simular dados e atualizar a interface -->
+  <script>
+    const tempEl = document.getElementById('temp-value');
+    const humidityEl = document.getElementById('humidity-value');
+    const lightEl = document.getElementById('light-value');
+    const waterEl = document.getElementById('water-value');
+    const logsEl = document.getElementById('logs');
+
+    // Dados fictícios para 24h, 24 pontos (1 por hora)
+    const labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    const tempData = labels.map(() => (20 + Math.random() * 5).toFixed(1));
+    const humidityData = labels.map(() => (50 + Math.random() * 20).toFixed(0));
+    const lightData = labels.map(() => (200 + Math.random() * 300).toFixed(0));
+    const waterData = labels.map(() => (70 + Math.random() * 30).toFixed(0));
+
+    // Chart.js setup
+    const ctx = document.getElementById('sensorChart').getContext('2d');
+    const sensorChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Temperatura (°C)',
+            data: tempData,
+            borderColor: 'rgb(220,53,69)',
+            backgroundColor: 'rgba(220,53,69,0.2)',
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: 'Umidade (%)',
+            data: humidityData,
+            borderColor: 'rgb(13,110,253)',
+            backgroundColor: 'rgba(13,110,253,0.2)',
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: 'Luminosidade (lx)',
+            data: lightData,
+            borderColor: 'rgb(255,193,7)',
+            backgroundColor: 'rgba(255,193,7,0.2)',
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: 'Nível da Água (%)',
+            data: waterData,
+            borderColor: 'rgb(13,202,240)',
+            backgroundColor: 'rgba(13,202,240,0.2)',
+            fill: true,
+            tension: 0.3,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { mode: 'index', intersect: false },
+        },
+        interaction: {
+          mode: 'nearest',
+          intersect: false,
+        },
+        scales: {
+          y: { beginAtZero: true },
+        },
+      },
+    });
+
+    // Atualiza os cards com dados aleatórios a cada 5 segundos
+    function updateCurrentValues() {
+      const temp = (20 + Math.random() * 5).toFixed(1);
+      const humidity = (50 + Math.random() * 20).toFixed(0);
+      const light = (200 + Math.random() * 300).toFixed(0);
+      const water = (70 + Math.random() * 30).toFixed(0);
+
+      tempEl.textContent = `${temp} °C`;
+      humidityEl.textContent = `${humidity} %`;
+      lightEl.textContent = `${light} lx`;
+      waterEl.textContent = `${water} %`;
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString();
+
+      logsEl.textContent =
+        `[${timeStr}] Temperatura: ${temp}°C\n` +
+        `[${timeStr}] Umidade: ${humidity}%\n` +
+        `[${timeStr}] Luminosidade: ${light} lx\n` +
+        `[${timeStr}] Nível da Água: ${water}%\n` +
+        logsEl.textContent;
+
+      // Limitar logs a 10 linhas
+      const lines = logsEl.textContent.split('\n');
+      if (lines.length > 40) {
+        logsEl.textContent = lines.slice(0, 40).join('\n');
+      }
+    }
+
+    updateCurrentValues();
+    setInterval(updateCurrentValues, 5000);
+  </script>
+</body>
+</html>
